@@ -1,0 +1,28 @@
+#stars-component .glyphicon {
+	margin: 0.3em;
+	font-size: 1.75em;
+}
+
+#button-component{
+	text-align: center;
+	margin-top: 50px;
+}
+
+#stars-component .well, #answer-component .well {
+	height: 150px;
+}
+
+#numbers-component .number {
+	display: inline-block;
+	margin: 0.5em;
+	background-color: #bbb;
+	width: 32px;
+	text-align: center;
+	font-size: 22px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+#numbers-component{
+	text-align: center;
+}
