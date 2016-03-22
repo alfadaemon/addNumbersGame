@@ -6,9 +6,14 @@ var ButtonComponent = React.createClass({
 		this.props.mainHandleClick(this.props.increment)
 	},
 	render: function(){
+		var disabled
+		disabled = this.props.selectedNumbers.length === 0
 		return(
 			<div id="button-component">
-				<button className="btn btn-primary" onClick={this.buttonHandleClick}>
+				<button 
+					className="btn btn-primary btn-lg"
+					disabled={disabled} 
+					onClick={this.buttonHandleClick}>
 					=
 				</button>
 			</div>
@@ -18,10 +23,20 @@ var ButtonComponent = React.createClass({
 
 var AnswerComponent = React.createClass({
 	render: function(){
+		var props = this.props
+		var selectedNumbers = props.selectedNumbers.map(function(i){
+			return(
+				<span className="number" onClick={props.unselectNumber.bind(null, i)}>
+					{i}
+				</span>
+				)
+		})
+
+
 		return(
 			<div id="answer-component">
 				<div className='well'>
-					{this.props.mainCounter}
+					{selectedNumbers}
 				</div>
 			</div>
 			)
@@ -30,13 +45,20 @@ var AnswerComponent = React.createClass({
 
 var NumbersComponent = React.createClass({
 	render: function(){
-		var numbers = [];
+		var numbers = [], 
+			selectNumber = this.props.selectNumber,
+			className,
+			selectedNumbers = this.props.selectedNumbers;
 		for(var i=1; i<=9; i++){
+			className = "number selected-"+(selectedNumbers.indexOf(i)>=0)
 			numbers.push(
-				<div className="number">{i}</div>
+				<div className={className} 
+					onClick={selectNumber.bind(null, i)}>
+					{i}
+				</div>
 				)
 		}
-			
+
 		return(
 			<div id="numbers-component">
 				<div className='well'>
@@ -49,10 +71,9 @@ var NumbersComponent = React.createClass({
 
 var StarsComponent = React.createClass({
 	render: function(){
-		var numberOfStars = Math.floor(Math.random()*9)+1
 		var stars = []
 
-		for(var i =0; i<numberOfStars; i++){
+		for(var i =0; i<this.props.numberOfStars; i++){
 			stars.push(
 				<span className="glyphicon glyphicon-star"></span>
 				)
@@ -70,27 +91,50 @@ var StarsComponent = React.createClass({
 
 var MainComponent = React.createClass({
 	getInitialState: function(){
-		return {counter: 0}
+		return {
+			numberOfStars : Math.floor(Math.random()*9)+1, 
+			selectedNumbers: []
+		}
 	},
-	handleClick: function(increment){
-		this.setState({ counter: this.state.counter+increment})
+	selectNumber: function(clickedNumber){
+		if(this.state.selectedNumbers.indexOf(clickedNumber) < 0){
+			this.setState({
+				selectedNumbers: this.state.selectedNumbers.concat(clickedNumber)
+			})
+		}
+	},
+	unselectNumber: function(clickedNumber){
+		var selectedNumbers = this.state.selectedNumbers,
+			indexOfNumber = selectedNumbers.indexOf(clickedNumber)
+
+		selectedNumbers.splice(indexOfNumber, 1)
+
+		this.setState({ selectedNumbers: selectedNumbers })
 	},
 	render: function(){
+		var selectedNumbers = this.state.selectedNumbers,
+			numberOfStars = this.state.numberOfStars
 		return(
 			<div>
 				<div className='row'>
 					<div className='col-md-5'>
-						<StarsComponent />
+						<StarsComponent numberOfStars={numberOfStars} />
 					</div>
 					<div className='col-md-2'>
-						<ButtonComponent mainHandleClick={this.handleClick} increment={1} />
+						<ButtonComponent 
+							selectedNumbers={selectedNumbers}
+							mainHandleClick={this.handleClick} increment={1} />
 					</div>
 					<div className='col-md-5'>
-						<AnswerComponent mainCounter={this.state.counter} />
+						<AnswerComponent 
+							selectedNumbers={selectedNumbers}
+							unselectNumber={this.unselectNumber} />
 					</div>
 				</div>
 				<div className='row'>
-					<NumbersComponent />
+					<NumbersComponent 
+						selectedNumbers={selectedNumbers} 
+						selectNumber={this.selectNumber}/>
 				</div>
 			</div>
 		)
