@@ -126,7 +126,7 @@ var StarsComponent = React.createClass({
 var MainComponent = React.createClass({
 	getInitialState: function(){
 		return {
-			numberOfStars : Math.floor(Math.random()*9)+1, 
+			numberOfStars : this.randomNumber(), 
 			selectedNumbers: [],
 			usedNumbers: [],
 			redraws: 5,
@@ -134,9 +134,7 @@ var MainComponent = React.createClass({
 		}
 	},
 	randomNumber: function(){
-		this.setState({
-			numberOfStars: Math.floor(Math.random()*9) + 1
-		})
+		return Math.floor(Math.random()*9) + 1
 	},
 	selectNumber: function(clickedNumber){
 		if(this.state.selectedNumbers.indexOf(clickedNumber) < 0){
@@ -168,16 +166,29 @@ var MainComponent = React.createClass({
 	},
 	acceptAnswer: function(){
 		var usedNumbers = this.state.usedNumbers.concat(this.state.selectedNumbers)
-		this.setState({ 
-			usedNumbers: usedNumbers,
-			selectedNumbers: [],
-			correct: null,
-		})
-		this.randomNumber()
+
+		if(usedNumbers.length===9){
+			this.setState({//Reset all states
+				numberOfStars : this.randomNumber(),
+				correct: null,
+				selectedNumbers: [],	
+				redraws: 5,
+				usedNumbers: []
+			})
+			alert('You WIN!')
+		} else {
+			this.setState({ 
+				numberOfStars : this.randomNumber(),
+				usedNumbers: usedNumbers,
+				selectedNumbers: [],
+				correct: null,
+			})
+		}
 	},
 	redraw: function(){
 		if(this.state.redraws==0){
 			this.setState({//Reset all states
+				numberOfStars : this.randomNumber(),
 				correct: null,
 				selectedNumbers: [],	
 				redraws: 5,
@@ -186,12 +197,12 @@ var MainComponent = React.createClass({
 			alert('You loose!')
 		} else {
 			this.setState({
+				numberOfStars : this.randomNumber(),
 				correct: null,
 				selectedNumbers: [],	
 				redraws: this.state.redraws-1
 			})
 		}
-		this.randomNumber()
 	},
 	render: function(){
 		var selectedNumbers = this.state.selectedNumbers,
