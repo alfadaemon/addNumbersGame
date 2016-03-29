@@ -168,13 +168,7 @@ var MainComponent = React.createClass({
 		var usedNumbers = this.state.usedNumbers.concat(this.state.selectedNumbers)
 
 		if(usedNumbers.length===9){
-			this.setState({//Reset all states
-				numberOfStars : this.randomNumber(),
-				correct: null,
-				selectedNumbers: [],	
-				redraws: 5,
-				usedNumbers: []
-			})
+			this.replaceState( this.getInitialState())
 			alert('You WIN!')
 		} else {
 			this.setState({ 
@@ -187,13 +181,7 @@ var MainComponent = React.createClass({
 	},
 	redraw: function(){
 		if(this.state.redraws==0){
-			this.setState({//Reset all states
-				numberOfStars : this.randomNumber(),
-				correct: null,
-				selectedNumbers: [],	
-				redraws: 5,
-				usedNumbers: []
-			})
+			this.replaceState( this.getInitialState())
 			alert('You loose!')
 		} else {
 			this.setState({
